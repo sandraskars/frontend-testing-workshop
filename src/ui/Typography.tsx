@@ -5,5 +5,5 @@ export const H1: React.FC = ({ children }) => (
 );
 
 export const Paragraph: React.FC = ({ children }) => (
-  <p className="text-l text-gray-600 mb-8">{children}</p>
+  <p className="text-l mb-8">{children}</p>
 );
