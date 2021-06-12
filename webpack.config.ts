@@ -2,6 +2,8 @@ import ReactRefreshPlugin from "@pmmmwh/react-refresh-webpack-plugin";
 import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import * as fs from "fs";
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import SpeedMeasurePlugin from "speed-measure-webpack-plugin";
+import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 import * as path from "path";
 import * as webpack from "webpack";
 import packageJson from "./package.json";
@@ -9,6 +11,10 @@ import packageJson from "./package.json";
 // TODO: Don't detect container by reading this file, it does
 //  not always exist.
 const inDocker = fs.existsSync("/.dockerenv");
+
+const smp = new SpeedMeasurePlugin({
+  disable: !process.env.MEASURE,
+});
 
 const config = (env: Record<string, unknown>): webpack.Configuration => {
   const isProd = env && env.production;
@@ -94,6 +100,33 @@ const config = (env: Record<string, unknown>): webpack.Configuration => {
     ],
   };
 
+  if (isProd) {
+    return smp.wrap({
+      ...config,
+      mode: "production",
+      devtool: "hidden-source-map",
+      performance: {
+        // https://web.dev/your-first-performance-budget/#budget-for-quantity-based-metrics
+        hints: "warning",
+        maxEntrypointSize: 170 * 1024,
+        maxAssetSize: 450 * 1024,
+      },
+      plugins: [
+        ...(config.plugins ?? []),
+        process.env.ANALYZE &&
+        new BundleAnalyzerPlugin({
+          defaultSizes: "gzip",
+          generateStatsFile: true,
+          analyzerMode: "static",
+          openAnalyzer: false,
+          // Paths are relative to output directory
+          reportFilename: "../bundle-analyze-report.html",
+          statsFilename: "../stats.json",
+        }),
+      ].filter((it): it is webpack.WebpackPluginInstance => it != null),
+    });
+  }
+
   return {
     ...config,
     mode: "development",
@@ -104,7 +137,7 @@ const config = (env: Record<string, unknown>): webpack.Configuration => {
     devServer: {
       host: inDocker ? "0.0.0.0" : "127.0.0.1",
       disableHostCheck:
-        process.env.DANGEROUSLY_DISABLE_HOST_CHECK === "true" ? true : false,
+        process.env.DANGEROUSLY_DISABLE_HOST_CHECK === "true",
       contentBase: "./build",
       port: 3000,
       historyApiFallback: true,
