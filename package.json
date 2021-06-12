@@ -27,6 +27,7 @@
     "source-map-loader": "3.0.0",
     "speed-measure-webpack-plugin": "1.5.0",
     "style-loader": "2.0.0",
+    "tailwindcss": "2.1.4",
     "ts-jest": "27.0.2",
     "ts-loader": "9.2.2",
     "ts-node": "10.0.0",
