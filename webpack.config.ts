@@ -7,6 +7,7 @@ import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 import * as path from "path";
 import * as webpack from "webpack";
 import packageJson from "./package.json";
+import bodyParser from "body-parser";
 
 // TODO: Don't detect container by reading this file, it does
 //  not always exist.
@@ -142,6 +143,19 @@ const config = (env: Record<string, unknown>): webpack.Configuration => {
       port: 3000,
       historyApiFallback: true,
       hot: true,
+      before(app) {
+        app.use(bodyParser.json());
+        app.post('/login', (req, res) => {
+          const { email, password } = req.body;
+          if (email === 'success@mail.com' && password === 'hemmelig') {
+            res.sendStatus(200);
+          } else {
+            res.status(401).send({
+              message: 'Ugyldig brukernavn/passord'
+            });
+          }
+        });
+      }
     },
     module: {
       rules: [
