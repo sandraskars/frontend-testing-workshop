@@ -6,5 +6,5 @@ export const LoginPage: React.FC = () => {
     <div className="grid grid-flow-row p-6 justify-center">
       <LoginForm />
     </div>
-  )
-}
+  );
+};

@@ -7,5 +7,5 @@ export const LandingPage: React.FC = () => {
       <H1>Hallo 👋🏻</H1>
       <Paragraph>Her har vi et paragraf.</Paragraph>
     </div>
-  )
-}
+  );
+};

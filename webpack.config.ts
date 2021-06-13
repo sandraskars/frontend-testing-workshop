@@ -30,13 +30,13 @@ const config = (env: Record<string, unknown>): webpack.Configuration => {
             ...(isProd
               ? []
               : [
-                {
-                  loader: "babel-loader",
-                  options: {
-                    plugins: ["react-refresh/babel"],
+                  {
+                    loader: "babel-loader",
+                    options: {
+                      plugins: ["react-refresh/babel"],
+                    },
                   },
-                },
-              ]),
+                ]),
             {
               loader: "ts-loader",
             },
@@ -115,15 +115,15 @@ const config = (env: Record<string, unknown>): webpack.Configuration => {
       plugins: [
         ...(config.plugins ?? []),
         process.env.ANALYZE &&
-        new BundleAnalyzerPlugin({
-          defaultSizes: "gzip",
-          generateStatsFile: true,
-          analyzerMode: "static",
-          openAnalyzer: false,
-          // Paths are relative to output directory
-          reportFilename: "../bundle-analyze-report.html",
-          statsFilename: "../stats.json",
-        }),
+          new BundleAnalyzerPlugin({
+            defaultSizes: "gzip",
+            generateStatsFile: true,
+            analyzerMode: "static",
+            openAnalyzer: false,
+            // Paths are relative to output directory
+            reportFilename: "../bundle-analyze-report.html",
+            statsFilename: "../stats.json",
+          }),
       ].filter((it): it is webpack.WebpackPluginInstance => it != null),
     });
   }
@@ -137,27 +137,26 @@ const config = (env: Record<string, unknown>): webpack.Configuration => {
     devtool: "eval-source-map",
     devServer: {
       host: inDocker ? "0.0.0.0" : "127.0.0.1",
-      disableHostCheck:
-        process.env.DANGEROUSLY_DISABLE_HOST_CHECK === "true",
+      disableHostCheck: process.env.DANGEROUSLY_DISABLE_HOST_CHECK === "true",
       contentBase: "./build",
       port: 3000,
       historyApiFallback: true,
       hot: true,
       before(app) {
         app.use(bodyParser.json());
-        app.post('/login', (req, res) => {
+        app.post("/login", (req, res) => {
           const { email, password } = req.body;
-          if (email === 'success@mail.com' && password === 'hemmelig') {
+          if (email === "success@mail.com" && password === "hemmelig") {
             res.send({
-              token: "token1234"
+              token: "token1234",
             });
           } else {
             res.status(401).send({
-              message: 'Ugyldig brukernavn/passord'
+              message: "Ugyldig brukernavn/passord",
             });
           }
         });
-      }
+      },
     },
     module: {
       rules: [
@@ -175,7 +174,7 @@ const config = (env: Record<string, unknown>): webpack.Configuration => {
         message: /Failed to parse source map/,
       },
     ],
-  }
+  };
 };
 
 export default config;

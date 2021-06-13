@@ -13,8 +13,13 @@ interface LoginForm {
 }
 
 export const LoginForm: React.FC = () => {
-  const { register, handleSubmit, formState: { errors }, setFocus } = useForm<LoginForm>({
-    mode: "onBlur"
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setFocus,
+  } = useForm<LoginForm>({
+    mode: "onBlur",
   });
   const [serverError, setServerError] = useState<string>();
   const history = useHistory();
@@ -24,12 +29,12 @@ export const LoginForm: React.FC = () => {
   }, [setFocus]);
 
   const onSubmit = async (data: LoginForm) => {
-    const res = await fetch('/login', {
-      method: 'POST',
+    const res = await fetch("/login", {
+      method: "POST",
       body: JSON.stringify(data),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     });
 
     const json = await res.json();
@@ -37,8 +42,8 @@ export const LoginForm: React.FC = () => {
     if (!res.ok) {
       setServerError(json.message);
     } else {
-      localStorage.setItem('token', json.token);
-      history.push("/")
+      localStorage.setItem("token", json.token);
+      history.push("/");
     }
   };
 
@@ -62,7 +67,9 @@ export const LoginForm: React.FC = () => {
         <ErrorMessage
           name="email"
           errors={errors}
-          render={({ message }) => <SimpleErrorMessage>{message}</SimpleErrorMessage>}
+          render={({ message }) => (
+            <SimpleErrorMessage>{message}</SimpleErrorMessage>
+          )}
         />
 
         <label htmlFor="password">Passord</label>
@@ -71,11 +78,10 @@ export const LoginForm: React.FC = () => {
           id="password"
           data-testid="password"
           className="p-2 text-black"
-          {...register(
-            "password",
-            { required: "Passord er påkrevd", minLength: { value: 8, message: "Passordet må være minst 8 tegn" } }
-            )
-          }
+          {...register("password", {
+            required: "Passord er påkrevd",
+            minLength: { value: 8, message: "Passordet må være minst 8 tegn" },
+          })}
         />
         <ErrorMessage
           name="password"
@@ -89,4 +95,4 @@ export const LoginForm: React.FC = () => {
       </form>
     </>
   );
-}
+};

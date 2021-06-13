@@ -1,19 +1,19 @@
 export class LoginPage {
   visit() {
-    cy.visit('/login');
+    cy.visit("/login");
     return this;
   }
 
   getEmailInput() {
-    return cy.getBySelector('email');
+    return cy.getBySelector("email");
   }
 
   getPasswordInput() {
-    return cy.getBySelector('password');
+    return cy.getBySelector("password");
   }
 
   getError() {
-    return cy.getBySelector('error');
+    return cy.getBySelector("error");
   }
 
   typeEmail(value: string) {
@@ -27,7 +27,7 @@ export class LoginPage {
   }
 
   clickLoginButton() {
-    cy.getBySelector('submit').click();
+    cy.getBySelector("submit").click();
     return this;
   }
 }
