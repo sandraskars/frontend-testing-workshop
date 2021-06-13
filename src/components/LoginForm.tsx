@@ -13,7 +13,9 @@ interface LoginForm {
 }
 
 export const LoginForm: React.FC = () => {
-  const { register, handleSubmit, formState: { errors }, setFocus } = useForm<LoginForm>();
+  const { register, handleSubmit, formState: { errors }, setFocus } = useForm<LoginForm>({
+    mode: "onBlur"
+  });
   const [serverError, setServerError] = useState<string>();
   const history = useHistory();
 
@@ -23,18 +25,19 @@ export const LoginForm: React.FC = () => {
 
   const onSubmit = async (data: LoginForm) => {
     const res = await fetch('/login', {
-      method: 'post',
+      method: 'POST',
       body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json'
       }
     });
 
+    const json = await res.json();
+
     if (!res.ok) {
-      const json = await res.json();
       setServerError(json.message);
     } else {
-      setServerError(undefined);
+      localStorage.setItem('token', json.token);
       history.push("/")
     }
   };

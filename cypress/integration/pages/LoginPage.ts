@@ -12,6 +12,10 @@ export class LoginPage {
     return cy.getBySelector('password');
   }
 
+  getError() {
+    return cy.getBySelector('error');
+  }
+
   typeEmail(value: string) {
     this.getEmailInput().type(value);
     return this;
