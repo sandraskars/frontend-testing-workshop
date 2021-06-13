@@ -7,7 +7,8 @@
     "start": "webpack serve",
     "build": "webpack --env production",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test:cypress": "cypress run"
+    "test:cypress": "cypress run --config fileServerFolder=cypress",
+    "test:cypress:open": "cypress open --config fileServerFolder=cypress"
   },
   "author": "Sandra Skarshaug",
   "license": "ISC",
