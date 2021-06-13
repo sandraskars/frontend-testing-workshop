@@ -46,6 +46,7 @@ export const LoginForm: React.FC = () => {
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
+        id="login-form"
         className="p-6 text-white grid grid-flow-row gap-2 rounded-lg bg-green-700"
       >
         <H1>Logg inn</H1>
@@ -53,6 +54,7 @@ export const LoginForm: React.FC = () => {
         <label htmlFor="email">E-post</label>
         <input
           type="email"
+          id="email"
           data-testid="email"
           className="p-2 text-black"
           {...register("email", { required: "E-post er påkrevd" })}
@@ -66,6 +68,7 @@ export const LoginForm: React.FC = () => {
         <label htmlFor="password">Passord</label>
         <input
           type="password"
+          id="password"
           data-testid="password"
           className="p-2 text-black"
           {...register(

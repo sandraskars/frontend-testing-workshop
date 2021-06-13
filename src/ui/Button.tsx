@@ -6,7 +6,7 @@ interface IProps {
 }
 
 export const Button: React.FC<IProps> = ({ children, onClick }) => (
-  <button className="py-2 px-4 font-semibold text-white rounded-lg shadow-md bg-green-600 hover:bg-green-700"
+  <button className="py-2 px-4 font-semibold text-white rounded-lg shadow-md bg-green-800 hover:bg-green-900"
           onClick={onClick}
   >
     {children}
@@ -15,7 +15,7 @@ export const Button: React.FC<IProps> = ({ children, onClick }) => (
 
 export const SubmitButton: React.FC<IProps> = ({ children, onClick }) => (
   <button type="submit"
-          className="py-2 px-4 font-semibold text-white rounded-lg shadow-md bg-green-600 hover:bg-green-800"
+          className="py-2 px-4 font-semibold text-white rounded-lg shadow-md bg-green-800 hover:bg-green-900"
           onClick={onClick}
           data-testid="submit"
   >

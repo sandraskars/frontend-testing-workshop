@@ -61,4 +61,10 @@ describe("Login", () => {
       .its("localStorage.token")
       .should("eq", "token1234")
   })
-})
+
+  it('Has no detectable a11y violations on load', () => {
+    loginPage.visit()
+    cy.injectAxe()
+    cy.checkA11y()
+  })
+});
