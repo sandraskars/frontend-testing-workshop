@@ -148,7 +148,9 @@ const config = (env: Record<string, unknown>): webpack.Configuration => {
         app.post('/login', (req, res) => {
           const { email, password } = req.body;
           if (email === 'success@mail.com' && password === 'hemmelig') {
-            res.sendStatus(200);
+            res.send({
+              token: "token1234"
+            });
           } else {
             res.status(401).send({
               message: 'Ugyldig brukernavn/passord'
