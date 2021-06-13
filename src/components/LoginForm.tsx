@@ -7,10 +7,18 @@ import { ErrorMessage } from "@hookform/error-message";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-interface LoginForm {
+interface ILoginForm {
   email: string;
   password: string;
 }
+
+type LoginResponse =
+  | {
+      message: string;
+    }
+  | {
+      token: string;
+    };
 
 export const LoginForm: React.FC = () => {
   const {
@@ -18,7 +26,7 @@ export const LoginForm: React.FC = () => {
     handleSubmit,
     formState: { errors },
     setFocus,
-  } = useForm<LoginForm>({
+  } = useForm<ILoginForm>({
     mode: "onBlur",
   });
   const [serverError, setServerError] = useState<string>();
@@ -28,7 +36,7 @@ export const LoginForm: React.FC = () => {
     setFocus("email");
   }, [setFocus]);
 
-  const onSubmit = async (data: LoginForm) => {
+  const onSubmit = async (data: ILoginForm) => {
     const res = await fetch("/login", {
       method: "POST",
       body: JSON.stringify(data),
@@ -37,13 +45,20 @@ export const LoginForm: React.FC = () => {
       },
     });
 
-    const json = await res.json();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const json: LoginResponse = await res.json();
 
     if (!res.ok) {
-      setServerError(json.message);
+      if ("message" in json) {
+        setServerError(json.message);
+      }
     } else {
-      localStorage.setItem("token", json.token);
-      history.push("/");
+      if ("token" in json) {
+        localStorage.setItem("token", json.token);
+        history.push("/");
+      } else {
+        setServerError("Noe gikk galt, prøv å logge inn på nytt.");
+      }
     }
   };
 

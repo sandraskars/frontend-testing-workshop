@@ -1,32 +1,32 @@
 export class LoginPage {
-  visit() {
+  visit(): LoginPage {
     cy.visit("/login");
     return this;
   }
 
-  getEmailInput() {
+  getEmailInput(): Cypress.Chainable<unknown> {
     return cy.getBySelector("email");
   }
 
-  getPasswordInput() {
+  getPasswordInput(): Cypress.Chainable<unknown> {
     return cy.getBySelector("password");
   }
 
-  getError() {
+  getError(): Cypress.Chainable<unknown> {
     return cy.getBySelector("error");
   }
 
-  typeEmail(value: string) {
+  typeEmail(value: string): LoginPage {
     this.getEmailInput().type(value);
     return this;
   }
 
-  typePassword(value: string) {
+  typePassword(value: string): LoginPage {
     this.getPasswordInput().type(value);
     return this;
   }
 
-  clickLoginButton() {
+  clickLoginButton(): LoginPage {
     cy.getBySelector("submit").click();
     return this;
   }
