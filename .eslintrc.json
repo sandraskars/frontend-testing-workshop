@@ -5,9 +5,10 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
+    "plugin:jsx-a11y/recommended"
   ],
-  "plugins": ["deprecation"],
+  "plugins": ["deprecation", "jsx-a11y"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"]

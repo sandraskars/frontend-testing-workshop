@@ -1,5 +1,6 @@
 {
   "baseUrl": "http://localhost:3000",
   "pluginsFile": "cypress/plugins",
-  "supportFile": "cypress/support"
+  "supportFile": "cypress/support",
+  "testFiles": "**/*.spec.ts"
 }

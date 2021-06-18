@@ -13,7 +13,6 @@
     "lint:fix": "eslint --fix ."
   },
   "author": "Sandra Skarshaug",
-  "license": "ISC",
   "devDependencies": {
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
     "@types/body-parser": "1.19.0",
@@ -28,7 +27,7 @@
     "@typescript-eslint/eslint-plugin": "4.26.1",
     "@typescript-eslint/parser": "4.26.1",
     "autoprefixer": "10.2.6",
-    "axe-core": "^4.2.2",
+    "axe-core": "4.2.2",
     "babel-loader": "8.2.2",
     "body-parser": "1.19.0",
     "clean-webpack-plugin": "3.0.0",
@@ -37,6 +36,7 @@
     "cypress-axe": "0.12.2",
     "eslint": "7.28.0",
     "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-jsx-a11y": "6.4.1",
     "eslint-plugin-deprecation": "1.2.1",
     "eslint-plugin-prettier": "3.4.0",
     "eslint-plugin-react": "7.24.0",
