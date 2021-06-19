@@ -228,6 +228,112 @@ loginPage
 </code>
 </details>
 
+## Tester for nettverkskall`
+I `landing-page.spec.ts` så ønsker vi:
+- Vi ønsker å teste at listen av planter vi får (ligger i `fixtures`) er like lang som JSON-dataen i `fixtures` dersom nettverkskallet går OK.
+- Vi ønsker også at vi skal få en feilmelding dersom nettverkskallet ikke går bra.
+- Vi ønsker at spinneren ksal vises før nettverkskall er ferdig
+- Vi ønsker at resultatene matcher søket vårt
+
+Så, løs følgende tester:
+```
+describe("Landing page", () => {
+
+  it("If plants are fetched successfully, should show list", () => {
+
+  });
+
+  it("If an error happens during plant request, an error message should be shown", () => {
+
+  });
+
+  it("Should show a spinner when fetching plants", () => {
+
+  });
+
+  it("Should show plants that matches the search only", () => {
+
+  });
+});
+```
+
+Merk, dere kan bruke intercept for å stubbe nettverkskall:
+```
+cy.intercept(
+      { method: "GET", url: "/plants" },
+      { fixture: "plants.json" },
+    ).as("plants");
+```
+Når vi her lagrer responsen som `plants`, kan vi senere kjøre en `cy.wait("@plants") for å vente på et requestet skal fullføre.
+
+
+<details>
+<summary><b>✅ Fasit for tester om nettverkskall</b></summary>
+<code>
+```it("If plants are fetched successfully, should show list", () => {
+    cy.intercept(
+      { method: "GET", url: "/plants" },
+      { fixture: "plants.json" },
+    ).as("plants");
+
+    cy.visit("/");
+    cy.wait("@plants");
+
+    // Check that number of plant-cards equal number of entries in plants.json
+    cy.getBySelector("plant-card").should("have.length", 5);
+  });
+
+  it("If an error happens during plant request, an error message should be shown", () => {
+    cy.intercept(
+      {
+        method: "GET",
+        url: "/plants",
+      },
+      {
+        statusCode: 500,
+        body: {
+          message: "Dette klarte vi ikke :/",
+        },
+      },
+    ).as("plants");
+
+    cy.visit("/");
+    cy.wait("@plants");
+
+    cy.getBySelector("error").contains("Dette klarte vi ikke :/");
+  });
+
+  it("Should show a spinner when fetching plants", () => {
+    cy.intercept(
+      { method: "GET", url: "/plants" },
+      { fixture: "plants.json", delay: 1000 },
+    ).as("plants");
+
+    cy.visit("/");
+    cy.getBySelector("spinner").should("exist");
+    cy.wait("@plants");
+    cy.getBySelector("spinner").should("not.exist");
+  });
+
+  it("Should show plants that matches the search only", () => {
+    cy.intercept(
+      { method: "GET", url: "/plants" },
+      { fixture: "plants.json" },
+    ).as("plants");
+
+    cy.visit("/");
+    cy.wait("@plants");
+
+    cy.getBySelector("search-input").type("monstera");
+    cy.getBySelector("plant-card").should("have.length", 1);
+    cy.getBySelector("search-input").clear();
+    cy.getBySelector("search-input").type("ra");
+    cy.getBySelector("plant-card").should("have.length", 2);
+  });
+  ``
+</code>
+</details>
+
 
 
 ## Tester for tilgjengelighet
@@ -272,6 +378,3 @@ For å ta i bruk denne ESlint-pluginen må vi:
 
 Hvis du nå har konfigurert ESLint riktig, vil du umiddelbart få tilbakemeldinger på om du bryter med universell utforming.
 **Merk:** Ser du nå at ESLint plukker for feil som ikke Cypress-testene ikke gjorde?
-
-## Noe om Jest og unit-tester her, eller?
-Legger til `jsDom` i jest.config.js for å kunne..
