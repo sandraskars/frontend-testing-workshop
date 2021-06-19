@@ -37,6 +37,7 @@ Vi må også legge til en `tsconfig.json`-fil på rotnivå i `cypress`-mappa for
 - Vi bruker `data-testid="..."` for å kunne selecte elementer (og da er vi uavhengige av f.eks CSS-klasser som kan endre seg)
 
 ## Skriv Cypress-tester!
+Det ligger allerede noen filer i `cypress/integration` dere skal jobbe med. 
 Cypress eksponererer et globalt objekt for oss som heter `cy`. Fra her har vi tilgang til API-et.
 - Vi bruker `.visit()` for å besøke ulike sider
 - `.get()` for å hente elementer i DOM-en
@@ -188,7 +189,6 @@ For å sjekke at et tekstfelt er synlig, kan man chaine på en `.should("be.visi
 <code>
 it("should show error message if we get a 500 error response", () => {
     loginPage.visit();
-    
         const error = "Tjenesten er utilgjengelig, prøv på nytt";
     
         cy.intercept("POST", `${Cypress.config().baseUrl}/login`, {
@@ -205,13 +205,15 @@ it("should show error message if we get a 500 error response", () => {
           .getError()
           .should("be.visible")
           .and("have.text", error);
+})
 </code>
 </details>
 
 <details>
 <summary><b>✅ Fasit for å vise valideringsfeil</b></summary>
 <code>
- loginPage
+it("should show validation error if password is less than 8 characters", () => {
+loginPage
       .visit()
       .typeEmail(successUser.email)
       .getPasswordInput()
@@ -222,6 +224,7 @@ it("should show error message if we get a 500 error response", () => {
       .getError()
       .should("be.visible")
       .and("have.text", "Passordet må være minst 8 tegn");
+});
 </code>
 </details>
 
@@ -245,9 +248,21 @@ Etter at du har skrevet testen, kjør opp Cypress igjen (eller gå tilbake til b
 Hadde vi noen feil? I så fall, fiks opp i dette!
 
 <details>
-<summary><b>ℹ️ HINT</b></summary>
+<summary><b>ℹ️ Hint</b></summary>
 Sjekk nettleserkonsollen.
 </details>
+
+<details>
+<summary><b>✅️ Fasit </b></summary>
+<code>
+it("Has no detectable a11y violations on load", () => {
+    cy.visit("/");
+    cy.injectAxe();
+    cy.checkA11y();
+  });
+  </code>
+</details>
+
 
 ### Kodeanalyse med eslint-plugin-jsx-a11y
 For å ta i bruk denne ESlint-pluginen må vi:
