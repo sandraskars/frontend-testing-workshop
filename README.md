@@ -21,7 +21,7 @@ For å kunne kjøre Cypress-testene headless, så kan vi legge til `"test:cypres
 
 Vi må også legge til en `tsconfig.json`-fil på rotnivå i `cypress`-mappa for å kunne kompilere det som et TS-prosjekt.
 
-Andre ting:
+## Andre ting:
 
 - For at Cypress skal vite hvor appen vår kjører, setter vi `baseUrl` i `cypress.json`. Vi må også si hvor vi har plugins og support-filer (eksemplene under er shorthands for `<mappenavn>/index.js`):
 ```
@@ -32,38 +32,70 @@ Andre ting:
 }
 ```
 
-- Noe om at vi kan bruke dev-serveren vår til å gi en gitt respons på gitte endepunkter, som vi kan bruke i Cypress-testene.
-- Legger til `"test:cypress:open": "cypress open --config fileServerFolder=cypress"` under `scripts` i `package.json`
+- Vi kan bruke dev-serveren vår til å gi en gitt respons på gitte endepunkter, som vi kan bruke i Cypress-testene.
+- Vi legger til scriptet `"test:cypress:open": "cypress open --config fileServerFolder=cypress"` under `scripts` i `package.json`, og det bruker vi for å kjøre opp Cypress-brukergrensesnittet i Chrome
+- Vi bruker `data-testid="..."` for å kunne selecte elementer (og da er vi uavhengige av f.eks CSS-klasser som kan endre seg)
 
-## Noe om tester her..
+## Skriv Cypress-tester!
+Cypress eksponererer et globalt objekt for oss som heter `cy`. Fra her har vi tilgang til API-et.
+- Vi bruker `.visit()` for å besøke ulike sider
+- `.get()` for å hente elementer i DOM-en
+- `.type()` etter at man har hentet et inputelement for å skrive inn noe
+- `.click()` for å klikke på et element du har hentet
+- `.url()` for å hente ut URL-en du er på 
+- `.should()` for å asserte ulike tilstander
+
+**Først:**
+
 Vi ønsker oss følgende flyt:
 - Brukeren besøker `/login`-siden, og da er inputfeltet for e-post allerede i fokus
 - Når brukeren skriver inn e-post og passord, og klikker logg inn, så skal man bli redirected til forsiden
  
-```
-// TODO: Sandra, fjern mode: onBlur fra login-formet.
+i `login.spec.ts`:
+Test at vi har riktig fokus, og at vi blir redirected ti riktig side etter login
 
+```
 describe("Login", () => {
   it("should focus on email input field on render", () => {
     // TODO
   })
+```
 
+For neste test-case, bruk `const successUser = {email: "success@mail.com", password: "hemmelig"}`. Det er kun å logge inn med denne brukeren som gir en suksessfull innlogging.
+```
   it("should login and be redirected to front page", () => {
     // TODO
   })
 })
-
 ```
 
 <details>
-<summary><b>ℹ️ HINT</b></summary>
-  cy.visit("/login")
-       .get("[data-testid=email]").should('be.focused')
+<summary><b>ℹ️ HINT, sette fokus</b></summary>
+  Hent ut riktig element, og bruk `.should('be.focused')`. 
+  `useForm` i LoginForm kan ta inn et objekt, der der kan man sette `mode` til mode: `"onBlur"` for å få ønsket oppførsel.
 </details>
 
 <details>
-<summary><b>ℹ️ HINT</b></summary>
-  const successUser = {email: "success@mail.com", password: "hemmelig"}
+<summary><b>ℹ️ HINT, redirecting</b></summary>
+Alt chaines:
+ - Hent ut element for epost, skriv inn `successUser.email`
+ - Hent element for passord, skriv inn `successUser.password`
+ - Klikk på knappen for å logge inn
+ - Hent ut URL med `.url()`
+ - Assert at man har havnet på rikig url med should("eq", `${Cypress.config().baseUrl}/`)
+</details>
+
+<details>
+<summary><b>✅️ Fasit</b></summary>
+  ```
+  cy.visit("/login")
+         .get("[data-testid=email]").should('be.focused')
+  ```
+</details>
+
+<details>
+<summary><b>✅ Fasit, redirecting</b></summary>
+const successUser = {email: "success@mail.com", password: "hemmelig"}
       cy.visit("/login")
         .get("[data-testid=email]")
         .type(successUser.email)
@@ -73,9 +105,8 @@ describe("Login", () => {
         .click()
         .url()
         .should("eq", `${Cypress.config().baseUrl}/`)
+  
 </details>
-
-
 
 Vi ser allerede her at vi gjenbruker `.get/"[data-testid=X]"` flere ganger, og da er det perfekt å bruke Cypress Commands for å slippe å skrive det hver gang.
 

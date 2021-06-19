@@ -26,9 +26,7 @@ export const LoginForm: React.FC = () => {
     handleSubmit,
     formState: { errors },
     setFocus,
-  } = useForm<ILoginForm>({
-    mode: "onBlur",
-  });
+  } = useForm<ILoginForm>();
   const [serverError, setServerError] = useState<string>();
   const history = useHistory();
 

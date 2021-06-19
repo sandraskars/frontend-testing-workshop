@@ -3,7 +3,7 @@ import { H1 } from "../ui/Typography";
 import { PlantSearchResult } from "../components/PlantSearchResult";
 import { useEffect, useState } from "react";
 import { Plant } from "../types";
-import { SimpleErrorMessage } from '../ui/SimpleErrorMessage';
+import { SimpleErrorMessage } from "../ui/SimpleErrorMessage";
 
 export const LandingPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,6 +46,7 @@ export const LandingPage: React.FC = () => {
         <H1>Velkommen til plantesøk 👋🏻🌿</H1>
         <input
           type="text"
+          className="bg-white"
           placeholder="Søk etter planter"
           onChange={handleChange}
           data-testid="search-input"
