@@ -87,10 +87,10 @@ Alt chaines:
 
 <details>
 <summary><b>✅️ Fasit</b></summary>
-  ```
+  <code>
   cy.visit("/login")
          .get("[data-testid=email]").should('be.focused')
-  ```
+  </code>
 </details>
 
 <details>
