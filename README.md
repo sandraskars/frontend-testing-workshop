@@ -270,7 +270,7 @@ Når vi her lagrer responsen som `plants`, kan vi senere kjøre en `cy.wait("@pl
 <details>
 <summary><b>✅ Fasit for tester om nettverkskall</b></summary>
 <code>
-```it("If plants are fetched successfully, should show list", () => {
+it("If plants are fetched successfully, should show list", () => {
     cy.intercept(
       { method: "GET", url: "/plants" },
       { fixture: "plants.json" },
@@ -330,7 +330,7 @@ Når vi her lagrer responsen som `plants`, kan vi senere kjøre en `cy.wait("@pl
     cy.getBySelector("search-input").type("ra");
     cy.getBySelector("plant-card").should("have.length", 2);
   });
-  ``
+ 
 </code>
 </details>
 
