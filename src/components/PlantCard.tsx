@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const PlantCard: React.FC<Props> = ({ plant }) => (
-  <article className="rounded shadow-lg max-w-sm">
+  <article className="rounded shadow-lg max-w-sm" data-testid="plant-card">
     <img
       className="w-full object-cover h-48"
       src={plant.imageUrl}
