@@ -8,6 +8,7 @@ import * as path from "path";
 import * as webpack from "webpack";
 import packageJson from "./package.json";
 import express from "express";
+import type { Request } from "express";
 
 // TODO: Don't detect container by reading this file, it does
 //  not always exist.
@@ -16,6 +17,12 @@ const inDocker = fs.existsSync("/.dockerenv");
 const smp = new SpeedMeasurePlugin({
   disable: !process.env.MEASURE,
 });
+
+type LoginRequest = Request<
+  unknown,
+  { token: string } | { message: string },
+  { email: string; password: string }
+>;
 
 const config = (env: Record<string, unknown>): webpack.Configuration => {
   const isProd = env && env.production;
@@ -144,7 +151,7 @@ const config = (env: Record<string, unknown>): webpack.Configuration => {
       hot: true,
       before(app) {
         app.use(express.json());
-        app.post("/login", (req, res) => {
+        app.post("/login", (req: LoginRequest, res) => {
           const { email, password } = req.body;
           if (email === "success@mail.com" && password === "hemmelig") {
             res.send({
