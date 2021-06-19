@@ -113,7 +113,7 @@ Se eksempel på en abstraksjon av innholdet på innlogginssiden på `cypress/int
 ## Med Cypress ka vi enkelt benytte oss av browser-APIer
 Sørg for at det er satt et felt som holder på token i `localStorage` etter at vi har fått en success etter innloggging.
 
-_NB: Ikke gjør dette i en virkelig app. `localStorage`, `sessionStorage` og lignende kan være et mål for XSS-angrep, og man bør ikke lagre noe som autoriserer bruk av appen din her._
+_NB: I en virkelig app bør du være forsiktig med å lagre tokens som dette i `localStorage` eller `sessionStorage`. Det kan utsette deg for XSS-angrep om du ikke tar visse forhåndsregler først. Les f.eks. [denne artikkelen](https://stackoverflow.com/questions/44133536/is-it-safe-to-store-a-jwt-in-localstorage-with-reactjs), eller kortvarianten i form av [denne kommentaren på StackOverflow](https://stackoverflow.com/a/44209185)._
 
 
 <details>
