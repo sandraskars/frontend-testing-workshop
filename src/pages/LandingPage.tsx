@@ -1,23 +1,44 @@
 import * as React from "react";
 import { H1 } from "../ui/Typography";
 import { PlantSearchResult } from "../components/PlantSearchResult";
-import { plants } from "../data/plants";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plant } from "../types";
+import { SimpleErrorMessage } from '../ui/SimpleErrorMessage';
 
 export const LandingPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResult, setSearchResult] = useState<Plant[]>([]);
+  const [plants, setPlants] = useState<Plant[]>([]);
+  const [isFetching, setIsFetching] = useState(false);
+  const [error, setError] = useState<Error>();
+
+  useEffect(() => {
+    async function fetchPlants() {
+      try {
+        setIsFetching(true);
+        const res = await fetch("/plants");
+        const json = await res.json();
+        if (res.ok) {
+          setPlants(json);
+        } else {
+          setError(json);
+        }
+      } catch (e) {
+        setError(e);
+      } finally {
+        setIsFetching(false);
+      }
+    }
+
+    void fetchPlants();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-
-    const result = plants.filter((plant) =>
-      plant.name.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-
-    setSearchResult(result);
   };
+
+  const results = plants.filter((plant) =>
+    plant.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   return (
     <>
@@ -27,9 +48,15 @@ export const LandingPage: React.FC = () => {
           type="text"
           placeholder="Søk etter planter"
           onChange={handleChange}
+          data-testid="search-input"
         />
       </section>
-      <PlantSearchResult result={searchResult} />
+      {isFetching && <span data-testid="spinner">Laster...</span>}
+      {error ? (
+        <SimpleErrorMessage>{error.message}</SimpleErrorMessage>
+      ) : (
+        <PlantSearchResult result={results} />
+      )}
     </>
   );
 };
