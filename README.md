@@ -77,12 +77,7 @@ For neste test-case, bruk `const successUser = {email: "success@mail.com", passw
 
 <details>
 <summary><b>ℹ️ HINT, redirecting</b></summary>
-Alt chaines:
- - Hent ut element for epost, skriv inn `successUser.email`
- - Hent element for passord, skriv inn `successUser.password`
- - Klikk på knappen for å logge inn
- - Hent ut URL med `.url()`
- - Assert at man har havnet på rikig url med should("eq", `${Cypress.config().baseUrl}/`)
+Alt chaines. Hent ut element for epost, skriv inn `successUser.email`. Hent element for passord, skriv inn `successUser.password`. Klikk på knappen for å logge inn. Hent ut URL med `.url()`. Assert at man har havnet på rikig url med should("eq", `${Cypress.config().baseUrl}/`)
 </details>
 
 <details>
@@ -95,6 +90,7 @@ Alt chaines:
 
 <details>
 <summary><b>✅ Fasit, redirecting</b></summary>
+<code>
 const successUser = {email: "success@mail.com", password: "hemmelig"}
       cy.visit("/login")
         .get("[data-testid=email]")
@@ -105,20 +101,16 @@ const successUser = {email: "success@mail.com", password: "hemmelig"}
         .click()
         .url()
         .should("eq", `${Cypress.config().baseUrl}/`)
-  
-</details>
-
-Vi ser allerede her at vi gjenbruker `.get/"[data-testid=X]"` flere ganger, og da er det perfekt å bruke Cypress Commands for å slippe å skrive det hver gang.
-
-
-<details>
-<summary><b>ℹ️ HINT</b></summary>
-  Cypress.Commands.add('getBySelector', (selector, ...args) => {
-    return cy.get(`[data-testid=${selector}]`, ...args)
-  })
+</code>
 </details>
 
 
+**Dere ser kanskje allerede at vi gjenbruker `.get/"[data-testid=X]"` flere ganger, og da er det perfekt å bruke Cypress Commands for å slippe å skrive det hver gang.**
+ 
+Sjekk ut filen `command.js`. Der ligger det en custom command som dere kan ta i bruk alle steder dere har brukt  `.get/"[data-testid=X]"`. 
+
+
+* *Merk:**
 For å få med oss TypeScript på laget for våre custom commands, må vil legge til kommandoen på det globale Cypress Chainable interfacet:
 ```
 // I cypress/support/index.d.ts
@@ -143,17 +135,21 @@ Se eksempel på en abstraksjon av innholdet på innlogginssiden på `cypress/int
 
 ## Med Cypress ka vi enkelt benytte oss av browser-APIer
 Sørg for at det er satt et felt som holder på token i `localStorage` etter at vi har fått en success etter innloggging.
+Vi kan bruke `.window()` når vi chainer kommandoer i Cypress, og videre chaine på en uthenting av en verdi i localStorage med `.its("localStorage.token")`.
+Deretter kan vi for testens skyld bruke en `.should("eq", "token1234")` som er det vi får fra endepunktet, men i teorien ville det kanskje vært nok å sjekket at det ble lagret en streng i `token-feltet`.
 
-_NB: I en virkelig app bør du være forsiktig med å lagre tokens som dette i `localStorage` eller `sessionStorage`. Det kan utsette deg for XSS-angrep om du ikke tar visse forhåndsregler først. Les f.eks. [denne artikkelen](https://stackoverflow.com/questions/44133536/is-it-safe-to-store-a-jwt-in-localstorage-with-reactjs), eller kortvarianten i form av [denne kommentaren på StackOverflow](https://stackoverflow.com/a/44209185)._
+NB: I en virkelig app bør du være forsiktig med å lagre tokens som dette i `localStorage` eller `sessionStorage`. Det kan utsette deg for XSS-angrep om du ikke tar visse forhåndsregler først. Les f.eks. [denne artikkelen](https://stackoverflow.com/questions/44133536/is-it-safe-to-store-a-jwt-in-localstorage-with-reactjs), eller kortvarianten i form av [denne kommentaren på StackOverflow](https://stackoverflow.com/a/44209185)._
 
 
 <details>
-<summary><b>ℹ️ HINT</b></summary>
+<summary><b>✅ FASIT</b></summary>
+<code>
 cy.url()
       .should('eq', `${Cypress.config().baseUrl}/`)
       .window()
       .its("localStorage.token")
       .should("eq", "token1234")
+</code>
 </details>
 
 
@@ -175,45 +171,60 @@ it("should show error message if we get a 500 error response", () => {
 ```
 
 <details>
-<summary><b>ℹ️ HINT</b></summary>
-Bruk `cy.intercept` for å stub-e et nettverkskall.
-[Cypress Intercept](https://docs.cypress.io/api/commands/intercept) 
+<summary><b>ℹ️ Hint, 500 status</b></summary>
+Bruk `cy.intercept` for å stub-e et nettverkskall, kan lese om det her: https://docs.cypress.io/api/commands/intercept) 
 
 Husk at du kan hente `baseUrl`-en fra config-en vår via `Cypress.config()`.
 </details>
 
-it("should show error message if we get a 500 error response", () => {
-    loginPage.visit();
-
-    const error = "Tjenesten er utilgjengelig, prøv på nytt"
-
-    cy.intercept('POST', `${Cypress.config().baseUrl}/login`, {
-      statusCode: 500,
-      body: {
-        message: error
-      }
-    });
-
-    loginPage
-      .typeEmail(successUser.email)
-      .typePassword(successUser.password)
-      .clickLoginButton()
-      .getError()
-      .should("be.visible")
-      .and("have.text", error)
 
 <details>
-<summary><b>ℹ️ HINT</b></summary>
-loginPage.visit()
+<summary><b>ℹ️ Hint, sjekke at validering fungerer</b></summary>
+For å sjekke at et tekstfelt er synlig, kan man chaine på en `.should("be.visible"), og man kan også verifisere teksten ved å bruke `.and("have.text", "...")`
+</details>
+
+<details>
+<summary><b>✅ Fasit for å vise feilmelding ved 500</b></summary>
+<code>
+it("should show error message if we get a 500 error response", () => {
+    loginPage.visit();
+    
+        const error = "Tjenesten er utilgjengelig, prøv på nytt";
+    
+        cy.intercept("POST", `${Cypress.config().baseUrl}/login`, {
+          statusCode: 500,
+          body: {
+            message: error,
+          },
+        });
+    
+        loginPage
+          .typeEmail(successUser.email)
+          .typePassword(successUser.password)
+          .clickLoginButton()
+          .getError()
+          .should("be.visible")
+          .and("have.text", error);
+</code>
+</details>
+
+<details>
+<summary><b>✅ Fasit for å vise valideringsfeil</b></summary>
+<code>
+ loginPage
+      .visit()
       .typeEmail(successUser.email)
       .getPasswordInput()
       .type("123")
-      .blur()
+      .blur();
 
-    loginPage.getError()
+    loginPage
+      .getError()
       .should("be.visible")
-      .and("have.text", "Passordet må være minst 8 tegn")
+      .and("have.text", "Passordet må være minst 8 tegn");
+</code>
 </details>
+
 
 
 ## Tester for tilgjengelighet
