@@ -9,7 +9,7 @@
     "test": "jest src",
     "test:cypress": "cypress run --config fileServerFolder=cypress",
     "test:cypress:open": "cypress open --config fileServerFolder=cypress",
-    "lint": "eslint src",
+    "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
   "author": "Sandra Skarshaug",
