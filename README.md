@@ -15,14 +15,15 @@ Vi kan deretter kjøre opp Cypress med `cypress open`, og får da generert opp n
     - `plugins`
     - `support`: her ligger Cypress Commands (gjenbrukbare kommandoer)
 
-Det blir da generert opp mange eksempler på tester i `integration`, og testdata i `fixtures`, noe man egentlig bare kan slette. 
-For å kunne kjøre Cypress-testene headless, så kan vi legge til `"test:cypress": cypress run` i package.json. Kjører vi den kommandoen, `npm run test:cypress`, vil alle testene kjøre, uten at GUI-et i nettleseren åpner seg.
+Det blir også generert noen eksempler på tester i `integration`, og testdata i `fixtures`. Disse kan være nyttige for å ha en mal, men det trenger vi ikke i dag, så da sletter vi dem.
+
+For å kunne kjøre Cypress-testene headless, så kan vi legge til `"test:cypress": cypress run` i package.json. Kjører vi den kommandoen mens serveren vår kjører, `npm run test:cypress`, vil alle testene kjøre, uten at GUI-et i nettleseren åpner seg.
 
 Vi må også legge til en `tsconfig.json`-fil på rotnivå i `cypress`-mappa for å kunne kompilere det som et TS-prosjekt.
 
-Ellers:
+Andre ting:
 
-- Noe om baseUrl i cypress.json:
+- For at Cypress skal vite hvor appen vår kjører, setter vi `baseUrl` i `cypress.json`. Vi må også si hvor vi har plugins og support-filer (eksemplene under er shorthands for `<mappenavn>/index.js`):
 ```
 {
     "baseUrl": "http://localhost:3000",
@@ -32,7 +33,7 @@ Ellers:
 ```
 
 - Noe om at vi kan bruke dev-serveren vår til å gi en gitt respons på gitte endepunkter, som vi kan bruke i Cypress-testene.
-- Legger til "test:cypress:open": "cypress open --config fileServerFolder=cypress" under scripts i `package.json`
+- Legger til `"test:cypress:open": "cypress open --config fileServerFolder=cypress"` under `scripts` i `package.json`
 
 ## Noe om tester her..
 Vi ønsker oss følgende flyt:
@@ -101,7 +102,7 @@ declare namespace Cypress {
 ``` 
 
 ## Lage abstraksjoner for "domenet"
-Ved å lage abstraksjoner for innholdet på en side tester, så gjør det at – selv om brukergrensesnittet endrer seg – så endrer du kun page-objektet ditt. S
+Ved å lage abstraksjoner for innholdet på en side tester, så gjør det at – selv om brukergrensesnittet endrer seg – så endrer du kun page-objektet ditt.
 
 Abstraksjonen vår holder på referanser til elementene på siden vi ønsker å interagere med, samt de typiske operasjonene vi gjør på disse elementene (for eksempel skrive noe tekst i et gitt input-felt).
 Dette gir oss økt fleksibilitet, nettopp fordi vi ikke trenger å endre mer enn den **ene** filen som eier abstraksjonen dersom UI-et vårt endrer seg.
@@ -110,7 +111,9 @@ I tillegg får vi mindre duplisert kode, og jeg vil påstå at testene er letter
 Se eksempel på en abstraksjon av innholdet på innlogginssiden på `cypress/integragtion/pages/LoginPage.ts` (og bytt ut/ta i bruk metodene i denne klassen i `login.spec.ts`) 
 
 ## Med Cypress ka vi enkelt benytte oss av browser-APIer
-Sørg for at det er satt et felt som holder på token i `localStorage` etter at vi har fått en success etter innlogging.
+Sørg for at det er satt et felt som holder på token i `localStorage` etter at vi har fått en success etter innloggging.
+
+_NB: Ikke gjør dette i en virkelig app. `localStorage`, `sessionStorage` og lignende kan være et mål for XSS-angrep, og man bør ikke lagre noe som autoriserer bruk av appen din her._
 
 
 <details>
