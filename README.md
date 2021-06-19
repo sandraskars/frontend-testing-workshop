@@ -270,7 +270,8 @@ For å ta i bruk denne ESlint-pluginen må vi:
 - Legge til `plugin:jsx-a11y/recommended` i `extends` i `.eslintrc.json`
 - Legge til `jsx-a11y` i `plugins` i `.eslintrc.json`
 
-Hvis du nå har konfigurert ESLint riktig, vil du umiddelbart få tilbakemeldinger på om du bryter f 
+Hvis du nå har konfigurert ESLint riktig, vil du umiddelbart få tilbakemeldinger på om du bryter med universell utforming.
+**Merk:** Ser du nå at ESLint plukker for feil som ikke Cypress-testene ikke gjorde?
 
 ## Noe om Jest og unit-tester her, eller?
 Legger til `jsDom` i jest.config.js for å kunne..
